@@ -4,6 +4,7 @@ import { useState } from "react"
 import axios from "axios"
 import {toast} from "react-toastify"
 import {SyncOutlined} from "@ant-design/icons"
+import Link from "next/link"
 
 
 export default function RegisterPage () {
@@ -17,7 +18,7 @@ export default function RegisterPage () {
     e.preventDefault()
     setLoading(true)
     try {
-      const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API}/register`, {
+      const { data } = await axios.post(`/api/register`, {
         name,
         email,
         password
@@ -122,10 +123,10 @@ export default function RegisterPage () {
           </form>
 
           <p className="mt-10 text-center text-sm/6 text-gray-400">
-            Not a member?{' '}
-            <a href="#" className="font-semibold text-indigo-400 hover:text-indigo-300">
-              Start a 14 day free trial
-            </a>
+            Already Registered{' '}
+            <Link href="/login" className="font-semibold text-indigo-400 hover:text-indigo-300">
+                Login
+            </Link>
           </p>
         </div>
       </div>
