@@ -1,13 +1,19 @@
+"use client"
 
+import { useAuth } from "../context/authContext"
+import { usePathname } from "next/navigation"
 import Link from "next/link"
+import { useRouter } from 'next/navigation';
+import axios from "axios";
+import { toast } from "react-toastify";
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const navigation = [
-  { name: 'Home', href: '/', current: true },
-  { name: 'Login', href: '/login', current: false },
-  { name: 'Register', href: '/register', current: false },
-  { name: 'Calendar', href: '#', current: false },
+  { name: 'Home', href: '/' },
+  { name: 'Login', href: '/login' },
+  { name: 'Register', href: '/register' },
+  { name: 'Courses', href: '/courses' },
 ]
 
 function classNames(...classes: string[]) {
@@ -15,6 +21,19 @@ function classNames(...classes: string[]) {
 }
 
 export default function TopNav () {
+  const { user, setUser} = useAuth()
+  const pathname = usePathname()
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    setUser(null)
+    window.localStorage.removeItem('user')
+
+    const {data} = await axios.get('/api/logout')
+    toast.success(`${data.message}`)
+    router.push('/login')
+  }
+
   return (
     <Disclosure as="nav" className="relative bg-gray-700">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -38,19 +57,22 @@ export default function TopNav () {
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
-                {navigation.map((item) => (
+                {navigation.map((item) => {
+                  const isCurrent = pathname === item.href
+                  return (
+                  
                   <Link
                     key={item.name}
                     href={item.href}
-                    aria-current={item.current ? 'page' : undefined}
+                    aria-current={isCurrent ? 'page' : undefined}
                     className={classNames(
-                      item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white',
+                      isCurrent? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white',
                       'rounded-md px-3 py-2 text-sm font-medium',
                     )}
                   >
                     {item.name}
                   </Link>
-                ))}
+                )})}
               </div>
             </div>
           </div>
@@ -96,6 +118,7 @@ export default function TopNav () {
                 <MenuItem>
                   <a
                     href="#"
+                    onClick={handleLogout}
                     className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
                   >
                     Sign out
@@ -106,25 +129,6 @@ export default function TopNav () {
           </div>
         </div>
       </div>
-
-      <DisclosurePanel className="sm:hidden">
-        <div className="space-y-1 px-2 pt-2 pb-3">
-          {navigation.map((item) => (
-            <DisclosureButton
-              key={item.name}
-              as="a"
-              href={item.href}
-              aria-current={item.current ? 'page' : undefined}
-              className={classNames(
-                item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white',
-                'block rounded-md px-3 py-2 text-base font-medium',
-              )}
-            >
-              {item.name}
-            </DisclosureButton>
-          ))}
-        </div>
-      </DisclosurePanel>
     </Disclosure>
   )
 }

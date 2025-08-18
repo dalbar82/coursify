@@ -1,11 +1,10 @@
 'use client'
 
-import { useState } from "react"
+import { useState, FormEvent } from "react"
 import axios from "axios"
 import {toast} from "react-toastify"
 import {SyncOutlined} from "@ant-design/icons"
 import Link from "next/link"
-
 
 export default function RegisterPage () {
   const [name, setName] = useState("")
@@ -13,8 +12,7 @@ export default function RegisterPage () {
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
 
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
     try {

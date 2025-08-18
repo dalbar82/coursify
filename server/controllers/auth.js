@@ -1,5 +1,7 @@
 import User from '../models/user.js'
 import { hashPassword, comparePassword } from '../utils/auth.js'
+import jwt from 'jsonwebtoken'
+
 
 export const register = async (req, res) => {
 	try {
@@ -28,5 +30,42 @@ export const register = async (req, res) => {
 	} catch (error) {
 		console.log(error)
 		return res.status(400).send('Error, Try again')
+	}
+}
+export const login = async (req, res) => {
+	try {
+		const { email, password } = req.body
+		if (!password) return res.status(400).send('Please enter password')
+		let user = await User.findOne({ email }).exec()
+		if (!user) return res.status(400).send('Please register')
+
+		// match password
+		const matched = await comparePassword(password, user?.password)
+
+		if (!matched) return res.status(400).send('Error, Try again')
+
+		// 	// create JWT
+		const token = jwt.sign({ _id: user?._id }, process.env.JWT_SECRET, {
+			expiresIn: '3d',
+		})
+		user.password = undefined
+
+		res.cookie('token', token, {
+			httpOnly: true,
+			// secure: true
+		})
+		return res.json(user)
+	} catch (error) {
+		console.log(error)
+		return res.status(400).send('Error, Try again')
+	}
+}
+
+export const logout = async (req, res) => {
+	try {
+		res.clearCookie('token')
+		return res.json({ message: 'Signout successful' })
+	} catch (error) {
+		console.log(error)
 	}
 }

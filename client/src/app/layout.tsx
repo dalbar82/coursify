@@ -1,6 +1,7 @@
 import TopNav from "../components/TopNav"
 import './globals.css'
 import { ToastContainer } from "react-toastify"
+import { AuthProvider } from "../context/authContext"
 
 export default function DashboardLayout({
   children,
@@ -10,9 +11,11 @@ export default function DashboardLayout({
   return (
     <html lang="en">
       <body>
-        <ToastContainer/>
-        <TopNav/>
-        <main>{children}</main>
+        <AuthProvider>
+          <ToastContainer/>
+          <TopNav/>
+          <main>{children}</main>
+        </AuthProvider>
       </body>
     </html>
   )
