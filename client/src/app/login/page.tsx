@@ -15,11 +15,6 @@ export default function LoginPage () {
   const [isLoading, setIsLoading] = useState(false)
   
   const router = useRouter()
-  useEffect(()=> {
-  console.log("user", user);
-  }, [])
-
-  
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -81,7 +76,7 @@ export default function LoginPage () {
                   Password
                 </label>
                 <div className="text-sm">
-                  <a href="#" className="font-semibold text-indigo-400 hover:text-indigo-300">
+                  <a href="/forgot-password" className="font-semibold text-indigo-400 hover:text-indigo-300">
                     Forgot password?
                   </a>
                 </div>
